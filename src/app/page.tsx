@@ -1,6 +1,10 @@
-"use client";
-
+import { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "DevToolkit - The Ultimate Backend Developer Workspace",
+  description: "A comprehensive, 100% local toolkit for backend developers. JSON formatting, GUID generation, JWT debugging, Regex testing, and more in one high-performance dashboard.",
+};
 
 const toolCategories = [
   {
@@ -57,14 +61,17 @@ export default function DashboardPage() {
         
         {/* Visual Decoration */}
         <div className="hidden lg:block absolute right-14 top-1/2 -translate-y-1/2 space-y-4">
-           {[1, 0.6, 0.3].map((op, i) => (
-             <div key={i} className="flex gap-4" style={{ opacity: op }}>
-                <div className="size-14 rounded-2xl bg-white border border-border shadow-card flex items-center justify-center text-primary">
-                  <span className="material-symbols-outlined text-[28px]">{['terminal', 'database', 'settings_ethernet'][i]}</span>
-                </div>
-                <div className="w-32 h-14 rounded-2xl bg-white border border-border shadow-card" />
-             </div>
-           ))}
+           {([1, 0.6, 0.3] as const).map((op, i) => {
+             const icons = ['terminal', 'database', 'settings_ethernet'] as const;
+             return (
+               <div key={icons[i]} className="flex gap-4" style={{ opacity: op }}>
+                  <div className="size-14 rounded-2xl bg-white border border-border shadow-card flex items-center justify-center text-primary">
+                    <span className="material-symbols-outlined text-[28px]">{icons[i]}</span>
+                  </div>
+                  <div className="w-32 h-14 rounded-2xl bg-white border border-border shadow-card" />
+               </div>
+             );
+           })}
         </div>
       </section>
 
@@ -102,9 +109,9 @@ export default function DashboardPage() {
             <span className="text-[11px] font-bold uppercase tracking-widest">Built for performance</span>
          </div>
          <div className="flex gap-8 text-[11px] font-bold uppercase tracking-widest hover:text-text transition-smooth">
-           <a href="#">Github</a>
-           <a href="#">Documentation</a>
-           <a href="#">Privacy</a>
+           <Link href="https://github.com">Github</Link>
+           <Link href="/docs">Documentation</Link>
+           <Link href="/privacy">Privacy</Link>
          </div>
       </footer>
     </div>

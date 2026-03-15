@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const tools = [
@@ -27,8 +28,14 @@ export default function Sidebar() {
     <aside className="w-[216px] bg-white border-r border-border flex flex-col shrink-0 h-screen select-none">
       {/* Brand */}
       <Link href="/" className="flex items-center gap-2.5 px-5 pt-5 pb-4 group">
-        <div className="size-8 rounded-lg bg-gradient-to-br from-primary to-accent-purple flex items-center justify-center text-white shadow-card">
-          <span className="material-symbols-outlined text-[18px]">terminal</span>
+        <div className="size-8 rounded-lg overflow-hidden flex items-center justify-center shadow-card border border-primary/10">
+          <Image 
+            src="/icon.png" 
+            alt="DevToolkit Logo" 
+            width={32} 
+            height={32} 
+            className="object-cover"
+          />
         </div>
         <span className="font-bold text-[15px] tracking-tight text-text">
           DevToolkit

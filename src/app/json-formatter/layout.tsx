@@ -8,8 +8,8 @@ export const metadata: Metadata = {
 
 export default function JsonFormatterLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return <>{children}</>;
 }

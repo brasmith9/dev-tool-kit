@@ -2,12 +2,12 @@ import { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
-  title: "JSON Diff Tool - Compare and Visualize JSON Differences",
-  description: "Compare two JSON objects side-by-side with our high-performance JSON Diff tool. Visualize added, modified, and removed keys instantly. 100% local and secure.",
-  keywords: ["json diff", "compare json", "json difference", "online json diff", "visual json compare"],
+  title: "GUID / UUID Generator - Secure & Unique Identifiers",
+  description: "Generate secure and unique GUIDs / UUIDs (v1, v4, v5) for your applications. Bulk generation supported. Fast, free, and completely local.",
+  keywords: ["guid generator", "v4 uuid generator", "online uuid generator", "bulk guid geneation", "unique identifiers"],
 };
 
-export default function JsonDiffLayout({
+export default function GuidGeneratorLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -25,8 +25,8 @@ export default function JsonDiffLayout({
       {
         "@type": "ListItem",
         "position": 2,
-        "name": "JSON Diff Tool",
-        "item": "https://devtoolkit.isaacanane.com/json-diff"
+        "name": "GUID Generator",
+        "item": "https://devtoolkit.isaacanane.com/guid-generator"
       }
     ]
   };

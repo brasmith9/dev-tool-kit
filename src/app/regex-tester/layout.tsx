@@ -2,12 +2,12 @@ import { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
-  title: "JSON Diff Tool - Compare and Visualize JSON Differences",
-  description: "Compare two JSON objects side-by-side with our high-performance JSON Diff tool. Visualize added, modified, and removed keys instantly. 100% local and secure.",
-  keywords: ["json diff", "compare json", "json difference", "online json diff", "visual json compare"],
+  title: "Regex Tester & Debugger - Test Regular Expressions Live",
+  description: "Real-time regular expression tester and debugger. Test your regex patterns against strings with live match highlighting and capture group details.",
+  keywords: ["regex tester", "online regex debugger", "regular expression checker", "regex live", "js regex test"],
 };
 
-export default function JsonDiffLayout({
+export default function RegexTesterLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -25,8 +25,8 @@ export default function JsonDiffLayout({
       {
         "@type": "ListItem",
         "position": 2,
-        "name": "JSON Diff Tool",
-        "item": "https://devtoolkit.isaacanane.com/json-diff"
+        "name": "Regex Tester",
+        "item": "https://devtoolkit.isaacanane.com/regex-tester"
       }
     ]
   };
