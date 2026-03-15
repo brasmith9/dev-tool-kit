@@ -1,65 +1,112 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import Link from "next/link";
+
+const toolCategories = [
+  {
+    title: "Security & Identity",
+    tools: [
+      { id: "guid", label: "GUID Generator", icon: "fingerprint", href: "/guid-generator", desc: "v1, v4, v5 UUIDs", color: "text-primary", bg: "bg-primary-light" },
+      { id: "jwt", label: "JWT Debugger", icon: "vpn_key", href: "/jwt-debugger", desc: "Decode & verify tokens", color: "text-accent-purple", bg: "bg-accent-purple/5" },
+      { id: "hash", label: "Hash Generator", icon: "enhanced_encryption", href: "/hash-generator", desc: "SHA, MD5, RIPEMD", color: "text-accent-pink", bg: "bg-accent-pink/5" },
+      { id: "pass", label: "Password Gen", icon: "password", href: "/password-generator", desc: "Secure entropy keys", color: "text-accent-amber", bg: "bg-accent-amber/5" },
+    ]
+  },
+  {
+    title: "Data & Formatting",
+    tools: [
+      { id: "json", label: "JSON Formatter", icon: "data_object", href: "/json-formatter", desc: "Beautify & validate", color: "text-accent-green", bg: "bg-accent-green/5" },
+      { id: "diff", label: "JSON Diff", icon: "difference", href: "/json-diff", desc: "Compare two JSONs", color: "text-accent-purple", bg: "bg-accent-purple/5" },
+      { id: "yaml", label: "YAML / JSON", icon: "schema", href: "/yaml-json", desc: "Convert between formats", color: "text-accent-teal", bg: "bg-accent-teal/5" },
+      { id: "sql", label: "SQL Formatter", icon: "database", href: "/sql-formatter", desc: "Clean up queries", color: "text-primary", bg: "bg-primary/5" },
+    ]
+  },
+  {
+    title: "Backend Utilities",
+    tools: [
+      { id: "epoch", label: "Epoch Converter", icon: "schedule", href: "/epoch-converter", desc: "Unix timestamp tool", color: "text-primary", bg: "bg-primary/5" },
+      { id: "cron", label: "Cron Parser", icon: "event_repeat", href: "/cron-parser", desc: "Schedule humanizer", color: "text-accent-purple", bg: "bg-accent-purple/5" },
+      { id: "regex", label: "Regex Tester", icon: "manage_search", href: "/regex-tester", desc: "Regular expressions", color: "text-accent-amber", bg: "bg-accent-amber/10" },
+      { id: "base64", label: "Base64", icon: "code", href: "/base64-tool", desc: "Encode & decode", color: "text-accent-amber", bg: "bg-accent-amber/5" },
+    ]
+  }
+];
+
+export default function DashboardPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="animate-in space-y-10 pb-12">
+      {/* Hero Welcome */}
+      <section className="relative overflow-hidden rounded-3xl bg-white border border-border shadow-float p-10 md:p-14">
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary-light/50 to-transparent pointer-events-none" />
+        <div className="relative z-10 max-w-2xl">
+           <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-text leading-none mb-4">
+             Your Essential <br/> <span className="text-primary">Backend Workspace.</span>
+           </h1>
+           <p className="text-lg text-text-sub font-medium leading-relaxed mb-8">
+             A high-performance toolkit for developers. All data stays local, all tools are instant, and the design is built for focus.
+           </p>
+           <div className="flex flex-wrap gap-4">
+             <Link href="/guid-generator" className="px-6 py-3 bg-primary text-white font-bold rounded-xl shadow-card hover:bg-primary-hover transition-smooth flex items-center gap-2">
+                Quick Start <span className="material-symbols-outlined text-[18px]">bolt</span>
+             </Link>
+             <Link href="/settings" className="px-6 py-3 bg-surface-raised text-text font-bold rounded-xl border border-border hover:bg-white hover:shadow-card transition-smooth">
+                Configure Prefs
+             </Link>
+           </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        
+        {/* Visual Decoration */}
+        <div className="hidden lg:block absolute right-14 top-1/2 -translate-y-1/2 space-y-4">
+           {[1, 0.6, 0.3].map((op, i) => (
+             <div key={i} className="flex gap-4" style={{ opacity: op }}>
+                <div className="size-14 rounded-2xl bg-white border border-border shadow-card flex items-center justify-center text-primary">
+                  <span className="material-symbols-outlined text-[28px]">{['terminal', 'database', 'settings_ethernet'][i]}</span>
+                </div>
+                <div className="w-32 h-14 rounded-2xl bg-white border border-border shadow-card" />
+             </div>
+           ))}
         </div>
-      </main>
+      </section>
+
+      {/* Categories Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {toolCategories.map((cat) => (
+          <div key={cat.title} className="space-y-4">
+            <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-text-dim ml-5">{cat.title}</h2>
+            <div className="flex flex-col gap-3">
+              {cat.tools.map((tool) => (
+                <Link 
+                  key={tool.id} 
+                  href={tool.href}
+                  className="group flex items-center gap-4 p-4 bg-white rounded-2xl border border-border shadow-card hover:shadow-card-hover hover:border-primary/20 transition-smooth"
+                >
+                  <div className={`size-12 rounded-xl ${tool.bg} flex items-center justify-center ${tool.color} transition-smooth group-hover:scale-110`}>
+                    <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: "'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24" }}>{tool.icon}</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-[15px] text-text mb-0.5">{tool.label}</h3>
+                    <p className="text-[12px] font-medium text-text-dim">{tool.desc}</p>
+                  </div>
+                  <span className="material-symbols-outlined text-text-dim/30 group-hover:text-primary transition-smooth translate-x-1 group-hover:translate-x-0 opacity-0 group-hover:opacity-100">arrow_forward</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom Footer Info */}
+      <footer className="pt-10 border-t border-border flex flex-col md:flex-row items-center justify-between gap-6 opacity-60">
+         <div className="flex items-center gap-2">
+            <div className="size-6 rounded bg-text-dim/20" />
+            <span className="text-[11px] font-bold uppercase tracking-widest">Built for performance</span>
+         </div>
+         <div className="flex gap-8 text-[11px] font-bold uppercase tracking-widest hover:text-text transition-smooth">
+           <a href="#">Github</a>
+           <a href="#">Documentation</a>
+           <a href="#">Privacy</a>
+         </div>
+      </footer>
     </div>
   );
 }
