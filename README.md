@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DevToolkit
 
-## Getting Started
+![DevToolkit Banner](https://devtoolkit.isaacanane.com/og-image.png)
 
-First, run the development server:
+**DevToolkit** is a high-performance, enterprise-grade suite of developer utilities designed for the modern backend engineer. It provides a clean, intentional workspace for common data transformation and debugging tasks—all executed 100% locally in your browser for maximum security.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+🚀 **Live at:** [devtoolkit.isaacanane.com](https://devtoolkit.isaacanane.com)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ✨ Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Data & Formatting**: 
+  - **JSON Diff**: Visual side-by-side comparison of JSON objects.
+  - **JSON Formatter**: Prettify, minify, and validate JSON.
+  - **YAML / JSON**: Convert between YAML and JSON formats.
+  - **SQL Formatter**: Clean up and indent complex SQL queries.
+- **Security & Identity**: 
+  - **JWT Debugger**: Decode and inspect JSON Web Tokens.
+  - **GUID Generator**: Bulk generate v1, v4, and v5 UUIDs.
+  - **Hash Generator**: Cryptographic hashing (SHA, MD5, RIPEMD).
+  - **Password Gen**: High-entropy, cryptographically strong password generation.
+- **Utilities**:
+  - **Regex Tester**: Live regex testing with match highlighting.
+  - **Epoch Converter**: Unix timestamp humanizer.
+  - **Base64 Tool**: Secure encoding and decoding for large payloads.
+  - **Cron Parser**: Human-readable cron schedule visualization.
+  - **URL Encoder**: Percent-encoding for strings and parameters.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Framework**: [Next.js 15+](https://nextjs.org/) (App Router)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **State Management**: React Hooks + LocalStorage Persistence
+- **Typography & Icons**: Inter Font + Material Symbols
+- **Design Principles**: Premium glassmorphism, high information density, and focused UX.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🔒 Security First
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+No data leaves your browser. DevToolkit is built primarily as a client-side application. Whether you are decoding sensitive JWTs or generating secure passwords, all processing happens locally on your machine.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🚀 Getting Started
+
+### Local Development
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/dev-tools.git
+   cd dev-tools
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+
+4. **Build for production:**
+   ```bash
+   npm run build
+   ```
+
+---
+
+## 👤 Author
+
+**Isaac Amankwaah Anane**
+- GitHub: [@brasmith9](https://github.com/brasmith9)
+- Website: [isaacanane.com](https://isaacanane.com)
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
