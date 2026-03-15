@@ -20,13 +20,13 @@ export default function GuidGeneratorLayout({
         "@type": "ListItem",
         "position": 1,
         "name": "DevToolkit",
-        "item": "https://devtoolkit.isaacanane.com"
+        "item": "ttps://devtools.isaacanane.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "GUID Generator",
-        "item": "https://devtoolkit.isaacanane.com/guid-generator"
+        "item": "ttps://devtools.isaacanane.com/guid-generator"
       }
     ]
   };

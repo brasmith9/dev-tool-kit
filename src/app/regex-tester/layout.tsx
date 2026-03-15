@@ -20,13 +20,13 @@ export default function RegexTesterLayout({
         "@type": "ListItem",
         "position": 1,
         "name": "DevToolkit",
-        "item": "https://devtoolkit.isaacanane.com"
+        "item": "ttps://devtools.isaacanane.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Regex Tester",
-        "item": "https://devtoolkit.isaacanane.com/regex-tester"
+        "item": "ttps://devtools.isaacanane.com/regex-tester"
       }
     ]
   };

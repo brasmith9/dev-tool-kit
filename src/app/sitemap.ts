@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 
-const BASE_URL = 'https://devtoolkit.isaacanane.com';
+const BASE_URL = 'ttps://devtools.isaacanane.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [

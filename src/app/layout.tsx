@@ -30,7 +30,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://devtoolkit.isaacanane.com"),
+  metadataBase: new URL("ttps://devtools.isaacanane.com"),
   title: {
     default: "DevToolkit - Professional Backend Developer Utilities",
     template: "%s | DevToolkit"
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "DevToolkit - Essential Backend Workspace",
     description: "Instant, local, and secure developer tools for the modern backend engineer.",
-    url: "https://devtoolkit.isaacanane.com",
+    url: "ttps://devtools.isaacanane.com",
     siteName: "DevToolkit",
     images: [
       {

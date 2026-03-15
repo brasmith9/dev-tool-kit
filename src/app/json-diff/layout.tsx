@@ -20,13 +20,13 @@ export default function JsonDiffLayout({
         "@type": "ListItem",
         "position": 1,
         "name": "DevToolkit",
-        "item": "https://devtoolkit.isaacanane.com"
+        "item": "ttps://devtools.isaacanane.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "JSON Diff Tool",
-        "item": "https://devtoolkit.isaacanane.com/json-diff"
+        "item": "ttps://devtools.isaacanane.com/json-diff"
       }
     ]
   };
