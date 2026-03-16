@@ -54,7 +54,8 @@ export default function KafkaVisualizer() {
     setTimeout(() => {
       setPartitions(prev => {
         const next = [...prev];
-        next[pIdx] = [...next[pIdx], { ...msg, status: "stored" }].slice(-6);
+        const storedMsg: Message = { ...msg, status: "stored" };
+        next[pIdx] = [...next[pIdx], storedMsg].slice(-6);
         return next;
       });
       setFlyingMessage(null);
@@ -62,44 +63,54 @@ export default function KafkaVisualizer() {
     }, 800);
   }, [flyingMessage, partitions]);
 
+  const processGroupConsumption = useCallback((prevGroups: Record<string, ConsumerGroup>) => {
+    const nextGroups = { ...prevGroups };
+    let activity = false;
+
+    Object.keys(nextGroups).forEach(gId => {
+      const group = nextGroups[gId];
+      for (let p = 0; p < PARTITION_COUNT; p++) {
+        const currentOffset = group.offsets[p] || 0;
+        const partitionMsgs = partitions[p];
+        
+        if (partitionMsgs.some(m => m.offset >= currentOffset)) {
+          group.offsets[p] = currentOffset + 1;
+          setStoryLine(`${group.name} just 'committed' offset ${currentOffset + 1} on Partition ${p}.`);
+          activity = true;
+          break;
+        }
+      }
+    });
+
+    return activity ? nextGroups : prevGroups;
+  }, [partitions]);
+
   // Consumer Loop: One at a time for slow-mo "story" feel
   useEffect(() => {
     const interval = setInterval(() => {
-      setGroups(prevGroups => {
-        const nextGroups = { ...prevGroups };
-        let activity = false;
-
-        // Try to consume for groups
-        Object.keys(nextGroups).forEach(gId => {
-          const group = nextGroups[gId];
-          // Find first partition where we have unread messages
-          for (let p = 0; p < PARTITION_COUNT; p++) {
-             const currentOffset = group.offsets[p] || 0;
-             const partitionMsgs = partitions[p];
-             
-             // In our limited viz, we check if there's a message at this relative index
-             // Real Kafka handles this via absolute offsets, we simulate it
-             if (partitionMsgs.length > 0 && partitionMsgs.some(m => m.offset >= currentOffset)) {
-                group.offsets[p] = currentOffset + 1;
-                setStoryLine(`${group.name} just 'committed' offset ${currentOffset + 1} on Partition ${p}.`);
-                activity = true;
-                break; // One message per group per tick for clarity
-             }
-          }
-        });
-
-        return activity ? nextGroups : prevGroups;
-      });
+      setGroups(processGroupConsumption);
     }, 2500);
 
     return () => clearInterval(interval);
-  }, [partitions]);
+  }, [processGroupConsumption]);
 
   useEffect(() => {
     if (!autoProduce) return;
     const interval = setInterval(produce, 2000);
     return () => clearInterval(interval);
   }, [autoProduce, produce]);
+
+  const rewindStory = () => {
+    setPartitions(new Array(PARTITION_COUNT).fill([]).map(() => [])); 
+    setGroups(prev => {
+      const res = { ...prev };
+      Object.keys(res).forEach(k => {
+        res[k] = { ...res[k], offsets: { 0: 0, 1: 0, 2: 0 } };
+      });
+      return res;
+    });
+    setStoryLine("Click 'Produce' to start the story.");
+  };
 
   return (
     <div className="animate-in flex flex-col gap-6 tool-container">
@@ -114,11 +125,7 @@ export default function KafkaVisualizer() {
         <div className="flex items-center gap-3">
           <button 
             type="button" 
-            onClick={() => { setPartitions(new Array(PARTITION_COUNT).fill([]).map(() => [])); setGroups(prev => {
-              const res = { ...prev };
-              Object.keys(res).forEach(k => res[k].offsets = { 0: 0, 1: 0, 2: 0 });
-              return res;
-            }); }}
+            onClick={rewindStory}
             className="px-4 py-2 text-sm font-semibold text-text-sub hover:text-text bg-surface border border-border rounded-xl cursor-pointer"
           >
             Rewind Story
@@ -191,7 +198,7 @@ export default function KafkaVisualizer() {
                    ))}
 
                    {/* Committed Offset Markers (The bookmarks) */}
-                   {Object.values(groups).map((group, gIdx) => {
+                   {Object.values(groups).map((group) => {
                       const offset = group.offsets[pIdx] || 0;
                       // Calculate height based on how many messages the group has read
                       // In our visualizer, we map offset to total height
@@ -200,7 +207,7 @@ export default function KafkaVisualizer() {
                         <div 
                           key={`${group.id}-marker-${pIdx}`}
                           className={`absolute left-0 right-0 h-0.5 ${group.color} transition-all duration-700 ease-out z-20 flex shadow-glow`}
-                          style={{ bottom: `${visualY}px` }}
+                          style={{ bottom: `${visualY}px`, color: group.offsets[pIdx] ? 'inherit' : 'transparent' }}
                         >
                            <div className={`absolute -right-3 -top-2 size-5 rounded-full ${group.color} text-white flex items-center justify-center text-[10px] shadow-lg border-2 border-white`}>
                               {group.label}

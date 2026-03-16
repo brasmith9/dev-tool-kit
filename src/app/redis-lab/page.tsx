@@ -104,11 +104,56 @@ export default function RedisLabPage() {
           const msg = "Items expired based on TTL (Time-To-Live).";
           setLogs(p => [msg, ...p].slice(0, 5));
         }
-        return expired ? { ...next } : prev;
+        return expired ? next : prev;
       });
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const renderCacheSlot = (idx: number) => {
+    const itemKey = Object.keys(cache)[idx];
+    const item = itemKey ? cache[itemKey] : null;
+    const isActive = itemKey === activeKey;
+    
+    let borderClass = 'border-border/50 border-dashed opacity-40';
+    if (item) borderClass = 'border-primary';
+    if (item?.isNew) borderClass = 'animate-bounce border-accent-green';
+
+    return (
+      <div 
+        key={`slot-${idx}`} 
+        className={`rounded-2xl border-2 transition-all duration-300 flex flex-col p-4 relative overflow-hidden bg-surface shadow-card
+          ${borderClass}
+          ${isActive ? 'ring-4 ring-primary/20 scale-105 shadow-lg' : ''}
+        `}
+      >
+        {item ? (
+          <>
+             <div className="flex justify-between items-start mb-2">
+               <span className="text-[10px] font-black text-primary truncate max-w-[80px]">{item.key}</span>
+               <span className="text-[9px] font-black text-accent-amber">{item.ttl}s</span>
+             </div>
+             <div className="text-[9px] font-medium text-text-dim break-all leading-relaxed line-clamp-2">
+               {item.value}
+             </div>
+             <div className="mt-auto pt-2 flex items-center justify-between">
+                <div className="h-1 flex-1 bg-surface-raised rounded-full overflow-hidden mr-3">
+                   <div 
+                     className="h-full bg-primary transition-all duration-1000" 
+                     style={{ width: `${(item.ttl / 30) * 100}%` }}
+                   />
+                </div>
+                <span className="material-symbols-outlined text-[14px] text-text-dim">memory</span>
+             </div>
+          </>
+        ) : (
+          <div className="h-full flex items-center justify-center">
+             <span className="material-symbols-outlined text-text-dim text-[24px] opacity-20">add</span>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="animate-in flex flex-col gap-6 tool-container">
@@ -139,50 +184,7 @@ export default function RedisLabPage() {
           </div>
 
           <div className="flex-1 grid grid-cols-4 gap-4">
-             {Object.keys(new Array(MAX_CACHE_SIZE).fill(0)).map((_, i) => {
-               const itemKey = Object.keys(cache)[i];
-               const item = itemKey ? cache[itemKey] : null;
-               const isActive = itemKey === activeKey;
-               
-               let borderClass = 'border-border/50 border-dashed opacity-40';
-               if (item) borderClass = 'border-primary';
-               if (item?.isNew) borderClass = 'animate-bounce border-accent-green';
-
-               return (
-                 <div 
-                   key={`slot-${i}`} 
-                   className={`rounded-2xl border-2 transition-all duration-300 flex flex-col p-4 relative overflow-hidden bg-surface shadow-card
-                     ${borderClass}
-                     ${isActive ? 'ring-4 ring-primary/20 scale-105 shadow-lg' : ''}
-                   `}
-                 >
-                   {item ? (
-                     <>
-                        <div className="flex justify-between items-start mb-2">
-                          <span className="text-[10px] font-black text-primary truncate max-w-[80px]">{item.key}</span>
-                          <span className="text-[9px] font-black text-accent-amber">{item.ttl}s</span>
-                        </div>
-                        <div className="text-[9px] font-medium text-text-dim break-all leading-relaxed line-clamp-2">
-                          {item.value}
-                        </div>
-                        <div className="mt-auto pt-2 flex items-center justify-between">
-                           <div className="h-1 flex-1 bg-surface-raised rounded-full overflow-hidden mr-3">
-                              <div 
-                                className="h-full bg-primary transition-all duration-1000" 
-                                style={{ width: `${(item.ttl / 30) * 100}%` }}
-                              />
-                           </div>
-                           <span className="material-symbols-outlined text-[14px] text-text-dim">memory</span>
-                        </div>
-                     </>
-                   ) : (
-                     <div className="h-full flex items-center justify-center">
-                        <span className="material-symbols-outlined text-text-dim text-[24px] opacity-20">add</span>
-                     </div>
-                   )}
-                 </div>
-               );
-             })}
+             {Array.from({ length: MAX_CACHE_SIZE }).map((_, i) => renderCacheSlot(i))}
           </div>
 
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary/10 to-transparent" />
@@ -194,11 +196,8 @@ export default function RedisLabPage() {
              <div className="space-y-2">
                {DB_ITEMS.map((dbItem) => {
                  const isLoading = dbLoading === dbItem.key;
-                 let bgClass = 'bg-surface hover:bg-surface-raised hover:shadow-card hover:border-primary/30';
-                 if (isLoading) bgClass = 'bg-primary/5 border-primary animate-pulse';
-                 
-                 let iconClass = 'bg-surface-raised text-text-dim group-hover:text-primary';
-                 if (isLoading) iconClass = 'bg-primary text-white';
+                 const bgClass = isLoading ? 'bg-primary/5 border-primary animate-pulse' : 'bg-surface hover:bg-surface-raised hover:shadow-card hover:border-primary/30';
+                 const iconClass = isLoading ? 'bg-primary text-white' : 'bg-surface-raised text-text-dim group-hover:text-primary';
 
                  return (
                    <button
@@ -229,14 +228,17 @@ export default function RedisLabPage() {
                 <span className="px-1.5 py-0.5 rounded bg-accent-blue/10 text-accent-blue text-[8px] font-black uppercase">LIVE</span>
              </div>
              <div className="flex-1 p-4 overflow-y-auto space-y-3">
-                {logs.map((log, i) => (
-                  <div key={`log-${logs.length - i}`} className="flex gap-3 animate-in">
-                     <span className="text-[9px] font-black text-text-dim pt-0.5 select-none">{logs.length - i}</span>
-                     <p className={`text-[11px] font-medium leading-relaxed ${log.includes('HIT') ? 'text-accent-green' : (log.includes('MISS') ? 'text-accent-amber' : 'text-text-sub')}`}>
-                        {log}
-                     </p>
-                  </div>
-                ))}
+                {logs.map((log, i) => {
+                  const logColorClass = log.includes('HIT') ? 'text-accent-green' : (log.includes('MISS') ? 'text-accent-amber' : 'text-text-sub');
+                  return (
+                    <div key={`log-${logs.length - i}`} className="flex gap-3 animate-in">
+                       <span className="text-[9px] font-black text-text-dim pt-0.5 select-none">{logs.length - i}</span>
+                       <p className={`text-[11px] font-medium leading-relaxed ${logColorClass}`}>
+                          {log}
+                       </p>
+                    </div>
+                  );
+                })}
              </div>
           </section>
         </div>

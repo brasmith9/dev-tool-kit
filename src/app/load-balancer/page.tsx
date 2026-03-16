@@ -69,6 +69,10 @@ export default function LoadBalancerPage() {
     setRequests(prev => prev.filter(r => r.id !== reqId));
   }, []);
 
+  const updateRequestStatus = useCallback((reqId: string, status: Request["status"]) => {
+    setRequests(current => current.map(r => (r.id === reqId ? { ...r, status } : r)));
+  }, []);
+
   const routeRequest = useCallback(() => {
     const activeServers = servers.filter(s => s.healthy);
     if (activeServers.length === 0) return;
@@ -84,18 +88,10 @@ export default function LoadBalancerPage() {
       return s;
     }));
 
-    setTimeout(() => {
-      setRequests(current => current.map(r => (r.id === reqId ? { ...r, status: "routing" } : r)));
-    }, 400);
-
-    setTimeout(() => {
-      setRequests(current => current.map(r => (r.id === reqId ? { ...r, status: "processing" } : r)));
-    }, 800);
-
-    setTimeout(() => {
-      removeRequest(reqId, target.id);
-    }, 2000);
-  }, [selectTarget, servers, removeRequest]);
+    setTimeout(() => updateRequestStatus(reqId, "routing"), 400);
+    setTimeout(() => updateRequestStatus(reqId, "processing"), 800);
+    setTimeout(() => removeRequest(reqId, target.id), 2000);
+  }, [selectTarget, servers, removeRequest, updateRequestStatus]);
 
   useEffect(() => {
     if (autoRate === 0) return;
@@ -105,6 +101,87 @@ export default function LoadBalancerPage() {
 
   const toggleHealth = (id: number) => {
     setServers(prev => prev.map(s => (s.id === id ? { ...s, healthy: !s.healthy } : s)));
+  };
+
+  const renderRequest = (r: Request) => {
+    const offset = (r.serverId || 2) - 2;
+    const xPos = offset * 260;
+    const isEntering = r.status === 'entering';
+    const isRouting = r.status === 'routing';
+    const isProcessing = r.status === 'processing';
+    
+    const reqStyle = { 
+       transform: isProcessing ? `translate(${xPos}px, 260px)` : 'none'
+    } as React.CSSProperties;
+
+    let animClass = "";
+    if (isEntering) animClass = "top-[-110px] opacity-100 scale-125";
+    else if (isRouting) animClass = "scale-110 opacity-100";
+    else if (isProcessing) animClass = "top-[220px] opacity-0";
+
+    return (
+       <div 
+        key={r.id} 
+        className={`absolute size-10 rounded-full shadow-[0_0_20px_rgba(37,99,235,0.5)] flex items-center justify-center text-[10px] font-black text-white transition-all duration-1000 bg-primary border-2 border-white dark:border-surface-raised z-30 ${animClass}`}
+        style={reqStyle}
+       >
+         {r.id.split('-')[1]}
+       </div>
+    );
+  };
+
+  const renderServer = (s: Server) => {
+    const isOffline = !s.healthy;
+    const borderClass = isOffline ? 'border-accent-red opacity-60 grayscale scale-95' : 'border-border-strong bg-white dark:bg-surface';
+    const statusLabel = isOffline ? 'Offline' : 'Healthy';
+    const statusBg = isOffline ? 'bg-accent-red/10 text-accent-red' : 'bg-accent-green/10 text-accent-green';
+    
+    let iconClass = 'text-text-dim';
+    if (s.healthy && s.connections > 0) iconClass = 'animate-spin text-primary';
+    else if (isOffline) iconClass = 'text-accent-red';
+
+    const btnClass = s.healthy ? 'bg-white text-accent-red border-accent-red/20 shadow-sm' : 'bg-accent-green text-white border-accent-green shadow-lg';
+
+    return (
+      <div key={s.id} className="flex flex-col items-center gap-3 w-40">
+         <div className={`w-full p-4 rounded-2xl border-2 flex flex-col items-center gap-2 shadow-card transition-all duration-300 relative ${borderClass}`}>
+            <div className="flex items-center justify-between w-full">
+               <div className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${statusBg}`}>
+                  {statusLabel}
+               </div>
+               <div className="text-[10px] font-black text-primary">W:{s.weight}</div>
+            </div>
+            
+            <div className="size-12 rounded-xl bg-surface-raised flex items-center justify-center transition-smooth">
+               <span className={`material-symbols-outlined text-[28px] ${iconClass}`}>
+                  {s.healthy ? 'dns' : 'error'}
+               </span>
+            </div>
+            
+            <div className="w-full">
+               <div className="flex justify-between text-[9px] font-bold text-text-dim mb-1">
+                  <span>Active Conns</span>
+                  <span>{s.connections}</span>
+               </div>
+               <div className="h-1.5 bg-surface-raised rounded-full overflow-hidden">
+                 <div className="h-full transition-all duration-500 bg-primary shadow-[0_0_10px_rgba(37,99,235,0.4)]" style={{ width: `${Math.min(100, (s.connections / 10) * 100)}%` }} />
+               </div>
+            </div>
+
+            <button 
+              type="button"
+              onClick={() => toggleHealth(s.id)}
+              className={`absolute -bottom-4 right-4 size-8 rounded-full border flex items-center justify-center transition-smooth cursor-pointer active:scale-90 ${btnClass}`}
+            >
+               <span className="material-symbols-outlined text-[16px]">{s.healthy ? 'power_settings_new' : 'bolt'}</span>
+            </button>
+         </div>
+         <div className="text-center">
+            <p className="text-[11px] font-black text-text">{s.name}</p>
+            <p className="text-[9px] font-bold text-text-dim uppercase tracking-tighter">{s.processedCount} Reqs Handled</p>
+         </div>
+      </div>
+    );
   };
 
   return (
@@ -193,31 +270,7 @@ export default function LoadBalancerPage() {
                 <span className="material-symbols-outlined text-[40px]">architecture</span>
                 <span className="text-[9px] font-black uppercase tracking-[0.2em] mt-1">LB Node</span>
                 
-                {requests.map((r) => {
-                   const offset = (r.serverId || 2) - 2;
-                   const xPos = offset * 260;
-                   const isEntering = r.status === 'entering';
-                   const isRouting = r.status === 'routing';
-                   const isProcessing = r.status === 'processing';
-                   
-                   const reqStyle = { 
-                      transform: isProcessing ? `translate(${xPos}px, 260px)` : 'none'
-                   } as React.CSSProperties;
-
-                   return (
-                      <div 
-                       key={r.id} 
-                       className={`absolute size-10 rounded-full shadow-[0_0_20px_rgba(37,99,235,0.5)] flex items-center justify-center text-[10px] font-black text-white transition-all duration-1000 bg-primary border-2 border-white dark:border-surface-raised z-30
-                         ${isEntering ? 'top-[-110px] opacity-100 scale-125' : ''}
-                         ${isRouting ? 'scale-110 opacity-100' : ''}
-                         ${isProcessing ? 'top-[220px] opacity-0' : ''}
-                       `}
-                       style={reqStyle}
-                      >
-                        {r.id.split('-')[1]}
-                      </div>
-                   );
-                })}
+                {requests.map(renderRequest)}
              </div>
              
              <svg className="absolute inset-x-0 h-full w-full opacity-20 pointer-events-none" style={{ top: '10%' }}>
@@ -228,55 +281,7 @@ export default function LoadBalancerPage() {
           </div>
 
           <div className="h-48 flex justify-center gap-16 pb-12">
-             {servers.map((s) => {
-                const isOffline = !s.healthy;
-                const borderClass = isOffline ? 'border-accent-red opacity-60 grayscale scale-95' : 'border-border-strong bg-white dark:bg-surface';
-                const statusLabel = isOffline ? 'Offline' : 'Healthy';
-                const statusBg = isOffline ? 'bg-accent-red/10 text-accent-red' : 'bg-accent-green/10 text-accent-green';
-                const iconColor = (s.healthy && s.connections > 0) ? 'animate-spin text-primary' : (isOffline ? 'text-accent-red' : 'text-text-dim');
-                const btnClass = s.healthy ? 'bg-white text-accent-red border-accent-red/20 shadow-sm' : 'bg-accent-green text-white border-accent-green shadow-lg';
-
-                return (
-                  <div key={s.id} className="flex flex-col items-center gap-3 w-40">
-                     <div className={`w-full p-4 rounded-2xl border-2 flex flex-col items-center gap-2 shadow-card transition-all duration-300 relative ${borderClass}`}>
-                        <div className="flex items-center justify-between w-full">
-                           <div className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${statusBg}`}>
-                              {statusLabel}
-                           </div>
-                           <div className="text-[10px] font-black text-primary">W:{s.weight}</div>
-                        </div>
-                        
-                        <div className="size-12 rounded-xl bg-surface-raised flex items-center justify-center transition-smooth">
-                           <span className={`material-symbols-outlined text-[28px] ${iconColor}`}>
-                              {s.healthy ? 'dns' : 'error'}
-                           </span>
-                        </div>
-                        
-                        <div className="w-full">
-                           <div className="flex justify-between text-[9px] font-bold text-text-dim mb-1">
-                              <span>Active Conns</span>
-                              <span>{s.connections}</span>
-                           </div>
-                           <div className="h-1.5 bg-surface-raised rounded-full overflow-hidden">
-                             <div className="h-full transition-all duration-500 bg-primary shadow-[0_0_10px_rgba(37,99,235,0.4)]" style={{ width: `${Math.min(100, (s.connections / 10) * 100)}%` }} />
-                           </div>
-                        </div>
-
-                        <button 
-                          type="button"
-                          onClick={() => toggleHealth(s.id)}
-                          className={`absolute -bottom-4 right-4 size-8 rounded-full border flex items-center justify-center transition-smooth cursor-pointer active:scale-90 ${btnClass}`}
-                        >
-                           <span className="material-symbols-outlined text-[16px]">{s.healthy ? 'power_settings_new' : 'bolt'}</span>
-                        </button>
-                     </div>
-                     <div className="text-center">
-                        <p className="text-[11px] font-black text-text">{s.name}</p>
-                        <p className="text-[9px] font-bold text-text-dim uppercase tracking-tighter">{s.processedCount} Reqs Handled</p>
-                     </div>
-                  </div>
-                );
-             })}
+             {servers.map(renderServer)}
           </div>
         </div>
       </div>
