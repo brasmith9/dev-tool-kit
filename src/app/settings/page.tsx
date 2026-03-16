@@ -1,13 +1,15 @@
 "use client";
 
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useState } from "react";
 
 export default function SettingsPage() {
-  const [theme, setTheme] = useState("system");
-  const [autoSave, setAutoSave] = useState(true);
-  const [maxHistory, setMaxHistory] = useState(100);
-  const [notifications, setNotifications] = useState(true);
-  const [compactMode, setCompactMode] = useState(false);
+  const [theme, setTheme, themeHydrated] = useLocalStorage<string>("dev_theme", "system");
+  const [autoSave, setAutoSave, autoSaveHydrated] = useLocalStorage<boolean>("dev_autosave", true);
+  const [maxHistory, setMaxHistory, maxHistoryHydrated] = useLocalStorage<number>("dev_max_history", 100);
+  const [notifications, setNotifications, notifHydrated] = useLocalStorage<boolean>("dev_notifications", true);
+  const [compactMode, setCompactMode, compactHydrated] = useLocalStorage<boolean>("dev_compact_mode", false);
+  
   const [saved, setSaved] = useState(false);
 
   const saveSettings = () => {
@@ -15,47 +17,51 @@ export default function SettingsPage() {
     setTimeout(() => setSaved(false), 2000);
   };
 
+  const hydrated = themeHydrated && autoSaveHydrated && maxHistoryHydrated && notifHydrated && compactHydrated;
+
+  if (!hydrated) return (
+    <div className="flex items-center justify-center h-full opacity-50">
+      <span className="material-symbols-outlined animate-spin">refresh</span>
+    </div>
+  );
+
   return (
-    <>
+    <div className="animate-in flex flex-col gap-6">
       {/* Page Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex items-end justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
-          <p className="text-text-secondary text-sm mt-0.5">
-            Configure your DevToolkit preferences.
+          <h2 className="text-2xl font-bold tracking-tight text-text">Workspace Settings</h2>
+          <p className="text-text-sub text-sm mt-1">
+            Customize your toolkit experience. Preferences are stored locally.
           </p>
         </div>
         <button
+          type="button"
           onClick={saveSettings}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer card-shadow ${
-            saved
-              ? "bg-green-500 text-white"
-              : "bg-primary text-white hover:bg-primary/90"
+          className={`flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-bold transition-smooth shadow-card cursor-pointer ${
+            saved ? "bg-accent-green text-white" : "bg-primary text-white hover:bg-primary-hover"
           }`}
         >
-          <span className="material-symbols-outlined text-base">
+          <span className="material-symbols-outlined text-[18px]">
             {saved ? "check" : "save"}
           </span>
-          {saved ? "Saved!" : "Save Settings"}
+          {saved ? "Preferences Saved" : "Save Changes"}
         </button>
       </div>
 
-      <div className="grid grid-cols-12 gap-5 flex-1">
-        <div className="col-span-12 lg:col-span-8 flex flex-col gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 pb-10">
+        <div className="md:col-span-8 flex flex-col gap-6">
           {/* Appearance */}
-          <div className="bg-white rounded-xl border border-border card-shadow p-5">
-            <h3 className="font-semibold text-sm flex items-center gap-2 mb-4">
-              <span className="material-symbols-outlined text-primary text-lg">
-                palette
-              </span>
-              Appearance
+          <section className="bg-white rounded-2xl border border-border shadow-card p-6 dark:bg-surface">
+            <h3 className="font-bold text-sm tracking-widest uppercase text-text-dim flex items-center gap-2 mb-6">
+              <span className="material-symbols-outlined text-primary text-[20px]">palette</span>
+              Visual Style
             </h3>
-            <div className="flex flex-col gap-4">
+            
+            <div className="space-y-6">
               <div>
-                <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2.5">
-                  Theme
-                </p>
-                <div className="flex gap-2">
+                <p id="theme-label" className="text-[11px] font-bold text-text-dim uppercase tracking-widest mb-3">Color Theme</p>
+                <div className="grid grid-cols-3 gap-3" role="radiogroup" aria-labelledby="theme-label">
                   {[
                     { id: "light", icon: "light_mode", label: "Light" },
                     { id: "dark", icon: "dark_mode", label: "Dark" },
@@ -63,172 +69,169 @@ export default function SettingsPage() {
                   ].map((t) => (
                     <button
                       key={t.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={theme === t.id}
                       onClick={() => setTheme(t.id)}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-all ${
+                      className={`flex flex-col items-center justify-center gap-2 p-4 rounded-xl text-xs font-bold transition-smooth cursor-pointer ${
                         theme === t.id
-                          ? "bg-primary text-white"
-                          : "bg-background-light border border-border text-text-secondary hover:border-primary/30"
+                          ? "bg-primary-light text-primary border-2 border-primary"
+                          : "bg-surface-raised border border-border text-text-sub hover:bg-white hover:border-primary/30 dark:bg-background dark:border-border"
                       }`}
                     >
-                      <span className="material-symbols-outlined text-lg">
-                        {t.icon}
-                      </span>
+                      <span className="material-symbols-outlined text-[24px]">{t.icon}</span>
                       {t.label}
                     </button>
                   ))}
                 </div>
               </div>
-              <label className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border cursor-pointer hover:border-primary/30 transition-colors">
-                <div>
-                  <span className="text-sm font-medium">Compact Mode</span>
-                  <p className="text-xs text-text-muted mt-0.5">
-                    Reduce padding for denser layout
-                  </p>
-                </div>
-                <input
-                  type="checkbox"
-                  checked={compactMode}
-                  onChange={(e) => setCompactMode(e.target.checked)}
-                  className="accent-primary rounded"
-                />
-              </label>
-            </div>
-          </div>
 
-          {/* General */}
-          <div className="bg-white rounded-xl border border-border card-shadow p-5">
-            <h3 className="font-semibold text-sm flex items-center gap-2 mb-4">
-              <span className="material-symbols-outlined text-primary text-lg">
-                tune
-              </span>
-              General
+              <div className="pt-4 border-t border-border/50">
+                <label className="flex items-center justify-between p-4 rounded-xl bg-surface-raised/50 border border-border cursor-pointer hover:bg-white transition-smooth group dark:bg-background">
+                  <div className="flex items-center gap-4">
+                    <div className="size-10 rounded-lg bg-accent-blue/10 text-accent-blue flex items-center justify-center group-hover:scale-110 transition-smooth">
+                      <span className="material-symbols-outlined">zoom_in_map</span>
+                    </div>
+                    <div>
+                      <span className="text-sm font-bold text-text">Compact Interface</span>
+                      <p className="text-[11px] font-medium text-text-dim mt-0.5">Optimize screen space with denser spacing</p>
+                    </div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    aria-label="Toggle Compact Interface"
+                    checked={compactMode}
+                    onChange={(e) => setCompactMode(e.target.checked)}
+                    className="size-5 accent-primary rounded-md cursor-pointer"
+                  />
+                </label>
+              </div>
+            </div>
+          </section>
+
+          {/* Productivity */}
+          <section className="bg-white rounded-2xl border border-border shadow-card p-6 dark:bg-surface">
+            <h3 className="font-bold text-sm tracking-widest uppercase text-text-dim flex items-center gap-2 mb-6">
+              <span className="material-symbols-outlined text-primary text-[20px]">bolt</span>
+              Workflow Tools
             </h3>
-            <div className="flex flex-col gap-3">
-              <label className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border cursor-pointer hover:border-primary/30 transition-colors">
-                <div>
-                  <span className="text-sm font-medium">
-                    Auto-save History
-                  </span>
-                  <p className="text-xs text-text-muted mt-0.5">
-                    Automatically save results to history
-                  </p>
+            
+            <div className="space-y-4">
+              <label className="flex items-center justify-between p-4 rounded-xl bg-surface-raised/50 border border-border cursor-pointer hover:bg-white transition-smooth group dark:bg-background">
+                <div className="flex items-center gap-4">
+                  <div className="size-10 rounded-lg bg-accent-green/10 text-accent-green flex items-center justify-center group-hover:scale-110 transition-smooth">
+                    <span className="material-symbols-outlined">history</span>
+                  </div>
+                  <div>
+                    <span className="text-sm font-bold text-text">Auto-save History</span>
+                    <p className="text-[11px] font-medium text-text-dim mt-0.5">Retain your tool inputs across sessions</p>
+                  </div>
                 </div>
                 <input
                   type="checkbox"
+                  aria-label="Toggle Auto-save History"
                   checked={autoSave}
                   onChange={(e) => setAutoSave(e.target.checked)}
-                  className="accent-primary rounded"
+                  className="size-5 accent-primary rounded-md cursor-pointer"
                 />
               </label>
-              <label className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border cursor-pointer hover:border-primary/30 transition-colors">
-                <div>
-                  <span className="text-sm font-medium">Notifications</span>
-                  <p className="text-xs text-text-muted mt-0.5">
-                    Show notifications for completed operations
-                  </p>
+
+              <label className="flex items-center justify-between p-4 rounded-xl bg-surface-raised/50 border border-border cursor-pointer hover:bg-white transition-smooth group dark:bg-background">
+                <div className="flex items-center gap-4">
+                  <div className="size-10 rounded-lg bg-accent-amber/10 text-accent-amber flex items-center justify-center group-hover:scale-110 transition-smooth">
+                    <span className="material-symbols-outlined">notifications</span>
+                  </div>
+                  <div>
+                    <span className="text-sm font-bold text-text">Desktop Notifications</span>
+                    <p className="text-[11px] font-medium text-text-dim mt-0.5">Alert when long processes finish</p>
+                  </div>
                 </div>
                 <input
                   type="checkbox"
+                  aria-label="Toggle Desktop Notifications"
                   checked={notifications}
                   onChange={(e) => setNotifications(e.target.checked)}
-                  className="accent-primary rounded"
+                  className="size-5 accent-primary rounded-md cursor-pointer"
                 />
               </label>
-              <div className="p-3 rounded-lg bg-background-light border border-border">
-                <div className="flex justify-between items-center mb-2">
-                  <div>
-                    <span className="text-sm font-medium">
-                      Max History Items
-                    </span>
-                    <p className="text-xs text-text-muted mt-0.5">
-                      Maximum items to keep in history
-                    </p>
+
+              <div className="p-4 rounded-xl bg-surface-raised/50 border border-border mt-2 dark:bg-background">
+                <div className="flex justify-between items-center mb-4">
+                  <div className="flex items-center gap-4">
+                    <div className="size-10 rounded-lg bg-accent-purple/10 text-accent-purple flex items-center justify-center">
+                      <span className="material-symbols-outlined">analytics</span>
+                    </div>
+                    <div>
+                      <span className="text-sm font-bold text-text">History Retention</span>
+                      <p className="text-[11px] font-medium text-text-dim mt-0.5">Limit items stored per tool</p>
+                    </div>
                   </div>
-                  <span className="text-sm font-bold text-primary">
-                    {maxHistory}
-                  </span>
+                  <span className="px-3 py-1 bg-primary text-white text-xs font-black rounded-lg">{maxHistory}</span>
                 </div>
                 <input
                   type="range"
                   min="10"
                   max="500"
                   step="10"
+                  aria-label="Max History Range"
                   value={maxHistory}
-                  onChange={(e) =>
-                    setMaxHistory(Number.parseInt(e.target.value, 10))
-                  }
-                  className="w-full accent-primary h-1.5 bg-border rounded-full appearance-none cursor-pointer"
+                  onChange={(e) => setMaxHistory(Number.parseInt(e.target.value, 10))}
+                  className="w-full h-2 bg-border rounded-full appearance-none cursor-pointer accent-primary"
                 />
-                <div className="flex justify-between text-[10px] text-text-muted mt-1">
-                  <span>10</span>
-                  <span>500</span>
+                <div className="flex justify-between text-[10px] font-bold text-text-dim mt-2 tracking-widest uppercase">
+                  <span>10 Items</span>
+                  <span>500 Items</span>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
         </div>
 
-        {/* Right Panel */}
-        <div className="col-span-12 lg:col-span-4 flex flex-col gap-5">
-          {/* About */}
-          <div className="bg-white rounded-xl border border-border card-shadow p-5">
-            <h3 className="font-semibold text-sm flex items-center gap-2 mb-4">
-              <span className="material-symbols-outlined text-text-muted text-lg">
-                info
-              </span>
-              About
+        {/* Info Column */}
+        <div className="md:col-span-4 flex flex-col gap-6">
+          <section className="bg-white rounded-2xl border border-border shadow-card p-6 overflow-hidden relative dark:bg-surface">
+            <div className="absolute top-0 right-0 size-32 bg-primary/5 rounded-full -mr-16 -mt-16 pointer-events-none" />
+            <h3 className="font-bold text-sm tracking-widest uppercase text-text-dim flex items-center gap-2 mb-6">
+              <span className="material-symbols-outlined text-text-dim text-[20px]">info</span>
+              Application
             </h3>
-            <div className="flex flex-col gap-2.5">
+            <div className="space-y-3">
               {[
-                { label: "Version", value: "2.4.0" },
-                { label: "License", value: "Enterprise" },
-                { label: "Build", value: "#2024.03.15-rc1" },
+                { label: "Edition", value: "Standard Local" },
+                { label: "Build ID", value: "2024.03.V2" },
+                { label: "Storage", value: "Browser IndexDB" },
               ].map((item) => (
-                <div
-                  key={item.label}
-                  className="p-3 rounded-lg bg-background-light border border-border"
-                >
-                  <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider mb-0.5">
-                    {item.label}
-                  </p>
-                  <p className="text-sm font-semibold">{item.value}</p>
+                <div key={item.label} className="p-3 rounded-xl border border-border bg-surface/50 dark:bg-background">
+                  <p className="text-[9px] font-black text-text-dim uppercase tracking-[0.15em] mb-0.5">{item.label}</p>
+                  <p className="text-sm font-bold text-text">{item.value}</p>
                 </div>
               ))}
             </div>
-          </div>
+          </section>
 
-          {/* Keyboard Shortcuts */}
-          <div className="bg-white rounded-xl border border-border card-shadow p-5">
-            <h3 className="font-semibold text-sm flex items-center gap-2 mb-4">
-              <span className="material-symbols-outlined text-text-muted text-lg">
-                keyboard
-              </span>
-              Keyboard Shortcuts
+          <section className="bg-white rounded-2xl border border-border shadow-card p-6 dark:bg-surface">
+            <h3 className="font-bold text-sm tracking-widest uppercase text-text-dim flex items-center gap-2 mb-6">
+              <span className="material-symbols-outlined text-text-dim text-[20px]">keyboard</span>
+              Hotkeys
             </h3>
-            <div className="flex flex-col gap-1.5">
+            <div className="space-y-4">
               {[
-                { key: "⌘ K", action: "Search tools" },
-                { key: "⌘ G", action: "Generate GUID" },
-                { key: "⌘ J", action: "Format JSON" },
-                { key: "⌘ B", action: "Base64 encode" },
-                { key: "⌘ D", action: "JWT decode" },
-              ].map((shortcut) => (
-                <div
-                  key={shortcut.key}
-                  className="flex items-center justify-between p-2"
-                >
-                  <span className="text-sm text-text-secondary">
-                    {shortcut.action}
-                  </span>
-                  <kbd className="px-2 py-0.5 rounded bg-background-light border border-border text-[11px] font-mono font-semibold text-text-secondary">
-                    {shortcut.key}
-                  </kbd>
+                { k: "⌘ K", desc: "Omni-search" },
+                { k: "⌘ G", desc: "Gen UUID" },
+                { k: "⌘ J", desc: "JSON Fix" },
+              ].map((h) => (
+                <div key={h.k} className="flex items-center justify-between group">
+                  <span className="text-[12px] font-bold text-text-sub group-hover:text-text transition-colors">{h.desc}</span>
+                  <div className="px-2 py-1 rounded-lg bg-surface-raised border border-border text-[10px] font-mono font-black shadow-sm group-hover:border-primary/50 transition-colors dark:bg-background">
+                    {h.k}
+                  </div>
                 </div>
               ))}
             </div>
-          </div>
+            <p className="mt-8 text-[11px] font-bold text-text-dim italic text-center">More shortcuts coming soon...</p>
+          </section>
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -1,13 +1,20 @@
 import { MetadataRoute } from 'next';
 
-const BASE_URL = 'ttps://devtools.isaacanane.com';
+const BASE_URL = 'https://devtools.isaacanane.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
     '',
     '/guid-generator',
     '/json-formatter',
+    '/json-to-code',
     '/json-diff',
+    '/ip-calculator',
+    '/curl-converter',
+    '/http-inspector',
+    '/kafka-visualizer',
+    '/redis-lab',
+    '/load-balancer',
     '/base64-tool',
     '/jwt-debugger',
     '/regex-tester',

@@ -11,7 +11,7 @@ const softwareAppData = {
   "name": "DevToolkit",
   "operatingSystem": "Web",
   "applicationCategory": "DeveloperApplication",
-  "description": "Enterprise-grade developer toolkit with GUID generator, JSON formatter, Base64 encoder, JWT debugger and more.",
+  "description": "Enterprise-grade developer toolkit with Kafka visualizer, Load balancer simulator, Redis lab, JSON to Code, JWT debugger and more.",
   "offers": {
     "@type": "Offer",
     "price": "0",
@@ -30,13 +30,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("ttps://devtools.isaacanane.com"),
+  metadataBase: new URL("https://devtools.isaacanane.com"),
   title: {
-    default: "DevToolkit - Professional Backend Developer Utilities",
+    default: "DevToolkit - Professional Backend & Architecture Utilities",
     template: "%s | DevToolkit"
   },
-  description: "A high-performance toolkit for backend developers. GUID generator, JSON formatter, Base64 encoder, JWT debugger, Regex tester, and more. All data stays local for maximum security.",
-  keywords: ["developer tools", "json formatter", "guid generator", "regex tester", "jwt debugger", "base64", "backend tools", "unix epoch", "cron parser", "sql formatter", "yaml to json"],
+  description: "A high-performance toolkit for backend developers. Kafka visualizer, Load balancer simulation, Redis lab, JSON to Code, JWT debugger, and more. All data stays local for maximum security.",
+  keywords: ["developer tools", "kafka visualizer", "load balancer simulator", "redis lab", "json to code", "curl to code", "http inspector", "json formatter", "guid generator", "regex tester", "jwt debugger", "backend tools"],
   authors: [{ name: "Isaac Amankwaah Anane" }],
   creator: "Isaac Amankwaah Anane",
   publisher: "DevToolkit",
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "DevToolkit - Essential Backend Workspace",
     description: "Instant, local, and secure developer tools for the modern backend engineer.",
-    url: "ttps://devtools.isaacanane.com",
+    url: "https://devtools.isaacanane.com",
     siteName: "DevToolkit",
     images: [
       {
@@ -84,6 +84,8 @@ export const metadata: Metadata = {
   },
 };
 
+import ThemeWrapper from "@/components/ThemeWrapper";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -99,15 +101,17 @@ export default function RootLayout({
         <JsonLd data={softwareAppData} />
       </head>
       <body
-        className={`${inter.variable} font-display bg-background-light text-text-primary min-h-screen antialiased`}
+        className={`${inter.variable} font-display bg-background text-text min-h-screen antialiased`}
       >
-        <div className="flex h-screen overflow-hidden">
-          <Sidebar />
-          <main className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
-            <Header />
-            {children}
-          </main>
-        </div>
+        <ThemeWrapper>
+          <div className="flex h-screen overflow-hidden">
+            <Sidebar />
+            <main className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
+              <Header />
+              {children}
+            </main>
+          </div>
+        </ThemeWrapper>
       </body>
     </html>
   );

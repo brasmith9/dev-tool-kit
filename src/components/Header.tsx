@@ -1,13 +1,17 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 const routeMeta: Record<string, { icon: string; label: string }> = {
   "/": { icon: "space_dashboard", label: "Dashboard" },
   "/guid-generator": { icon: "fingerprint", label: "GUID Generator" },
   "/json-formatter": { icon: "data_object", label: "JSON Formatter" },
+  "/json-to-code": { icon: "code", label: "JSON to Code" },
   "/json-diff": { icon: "difference", label: "JSON Diff" },
+  "/ip-calculator": { icon: "lan", label: "IP Calculator" },
+  "/curl-converter": { icon: "transform", label: "cURL Converter" },
+  "/http-inspector": { icon: "rebase_edit", label: "HTTP Inspector" },
   "/base64-tool": { icon: "code", label: "Base64 Tool" },
   "/jwt-debugger": { icon: "vpn_key", label: "JWT Debugger" },
   "/regex-tester": { icon: "manage_search", label: "Regex Tester" },
@@ -18,6 +22,9 @@ const routeMeta: Record<string, { icon: string; label: string }> = {
   "/cron-parser": { icon: "event_repeat", label: "Cron Parser" },
   "/yaml-json": { icon: "schema", label: "YAML / JSON" },
   "/password-generator": { icon: "password", label: "Password Gen" },
+  "/kafka-visualizer": { icon: "hub", label: "Kafka Visualizer" },
+  "/redis-lab": { icon: "memory", label: "Redis Cache Lab" },
+  "/load-balancer": { icon: "architecture", label: "Load Balancer" },
   "/settings": { icon: "settings", label: "Settings" },
 };
 
@@ -36,21 +43,22 @@ export default function Header() {
       )
     : [];
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setShowResults(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      setShowResults(false);
+    }
   }, []);
+
+  useEffect(() => {
+    globalThis.document?.addEventListener("mousedown", handleClickOutside);
+    return () => globalThis.document?.removeEventListener("mousedown", handleClickOutside);
+  }, [handleClickOutside]);
 
   return (
     <header className="flex justify-between items-center pb-4 select-none relative z-50">
       {/* Current Tool Indicator */}
       <div className="flex items-center gap-2.5">
-        <div className="size-8 rounded-lg bg-surface-raised border border-border flex items-center justify-center text-primary/80">
+        <div className="size-8 rounded-lg bg-surface-raised border border-border flex items-center justify-center text-primary/80 dark:bg-surface">
           <span className="material-symbols-outlined text-[18px]">
             {meta.icon}
           </span>
@@ -62,12 +70,12 @@ export default function Header() {
       </div>
 
       <div className="flex items-center gap-3 relative" ref={searchRef}>
-        <div className="bg-white border border-border px-3 py-1.5 rounded-xl flex items-center gap-2 shadow-sm focus-within:ring-2 focus-within:ring-primary/10 transition-smooth group">
+        <div className="bg-surface border border-border px-3 py-1.5 rounded-xl flex items-center gap-2 shadow-sm focus-within:ring-2 focus-within:ring-primary/10 transition-smooth group">
           <span className="material-symbols-outlined text-text-dim group-focus-within:text-primary text-[18px]">
             search
           </span>
           <input
-            className="bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] w-48 placeholder:text-text-dim/60 font-medium"
+            className="bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] w-48 placeholder:text-text-dim/60 font-medium text-text"
             placeholder="Search tools..."
             type="text"
             value={search}
@@ -80,7 +88,7 @@ export default function Header() {
         </div>
 
         {showResults && filteredTools.length > 0 && (
-          <div className="absolute top-full right-0 mt-2 w-64 bg-white border border-border rounded-xl shadow-float overflow-hidden animate-in">
+          <div className="absolute top-full right-0 mt-2 w-64 bg-surface border border-border rounded-xl shadow-float overflow-hidden animate-in">
             <div className="px-3 py-2 border-b border-border bg-surface/30">
                <span className="text-[10px] font-black uppercase tracking-widest text-text-dim">Search Results</span>
             </div>
@@ -88,6 +96,7 @@ export default function Header() {
               {filteredTools.map(([p, m]) => (
                 <button
                   key={p}
+                  type="button"
                   onClick={() => {
                     router.push(p);
                     setSearch("");

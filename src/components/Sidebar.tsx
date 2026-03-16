@@ -8,7 +8,11 @@ const tools = [
   { label: "Dashboard", icon: "space_dashboard", href: "/" },
   { label: "GUID Generator", icon: "fingerprint", href: "/guid-generator" },
   { label: "JSON Formatter", icon: "data_object", href: "/json-formatter" },
+  { label: "JSON to Code", icon: "code", href: "/json-to-code" },
   { label: "JSON Diff", icon: "difference", href: "/json-diff" },
+  { label: "IP Calculator", icon: "lan", href: "/ip-calculator" },
+  { label: "cURL Converter", icon: "transform", href: "/curl-converter" },
+  { label: "HTTP Inspector", icon: "rebase_edit", href: "/http-inspector" },
   { label: "Base64", icon: "code", href: "/base64-tool" },
   { label: "JWT Debugger", icon: "vpn_key", href: "/jwt-debugger" },
   { label: "Regex Tester", icon: "manage_search", href: "/regex-tester" },
@@ -18,6 +22,9 @@ const tools = [
   { label: "SQL Formatter", icon: "database", href: "/sql-formatter" },
   { label: "Cron Parser", icon: "event_repeat", href: "/cron-parser" },
   { label: "YAML / JSON", icon: "schema", href: "/yaml-json" },
+  { label: "Kafka Visualizer", icon: "hub", href: "/kafka-visualizer" },
+  { label: "Redis Cache Lab", icon: "memory", href: "/redis-lab" },
+  { label: "Load Balancer", icon: "architecture", href: "/load-balancer" },
   { label: "Password Gen", icon: "password", href: "/password-generator" },
 ];
 
@@ -25,7 +32,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-[216px] bg-white border-r border-border flex flex-col shrink-0 h-screen select-none">
+    <aside className="w-[216px] bg-surface border-r border-border flex flex-col shrink-0 h-screen select-none">
       {/* Brand */}
       <Link href="/" className="flex items-center gap-2.5 px-5 pt-5 pb-4 group">
         <div className="size-8 rounded-lg overflow-hidden flex items-center justify-center shadow-card border border-primary/10">

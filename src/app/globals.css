@@ -23,12 +23,40 @@
   --font-mono: "SF Mono", "Fira Code", "JetBrains Mono", "Cascadia Code", monospace;
 }
 
+/* Dark Mode Variables */
+.dark {
+  --color-background: #0f172a;
+  --color-surface: #1e293b;
+  --color-surface-raised: #334155;
+  --color-border: #334155;
+  --color-border-strong: #475569;
+  --color-text: #f8fafc;
+  --color-text-sub: #cbd5e1;
+  --color-text-dim: #64748b;
+  --color-primary-light: rgba(37, 99, 235, 0.15);
+}
+
+/* Compact Mode Overrides */
+.compact-mode .tool-container {
+  gap: 1rem !important;
+}
+.compact-mode .tool-header {
+  margin-bottom: 0.5rem !important;
+}
+.compact-mode .tool-panel {
+  padding: 0.75rem !important;
+}
+.compact-mode .sidebar-item {
+  padding: 0.5rem 0.75rem !important;
+}
+
 /* ====== Base ====== */
 body {
   font-family: var(--font-sans);
   background: var(--color-background);
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.15s ease;
 }
 
 ::selection {
@@ -40,6 +68,9 @@ body {
 .shadow-card {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.05);
 }
+.dark .shadow-card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
 .shadow-card-hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.04);
 }
@@ -48,10 +79,10 @@ body {
 }
 
 /* ====== Scrollbar ====== */
-::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+::-webkit-scrollbar-thumb { background: var(--color-border-strong); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-dim); }
 
 /* Material Symbols */
 .material-symbols-outlined {
@@ -115,6 +146,6 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 50%;
   background: var(--color-primary);
   cursor: pointer;
-  border: 2px solid white;
+  border: 2px solid var(--color-surface);
   box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }

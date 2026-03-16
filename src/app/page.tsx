@@ -20,18 +20,30 @@ const toolCategories = [
     title: "Data & Formatting",
     tools: [
       { id: "json", label: "JSON Formatter", icon: "data_object", href: "/json-formatter", desc: "Beautify & validate", color: "text-accent-green", bg: "bg-accent-green/5" },
+      { id: "json-code", label: "JSON to Code", icon: "code", href: "/json-to-code", desc: "Classes & interfaces", color: "text-accent-blue", bg: "bg-accent-blue/5" },
       { id: "diff", label: "JSON Diff", icon: "difference", href: "/json-diff", desc: "Compare two JSONs", color: "text-accent-purple", bg: "bg-accent-purple/5" },
       { id: "yaml", label: "YAML / JSON", icon: "schema", href: "/yaml-json", desc: "Convert between formats", color: "text-accent-teal", bg: "bg-accent-teal/5" },
       { id: "sql", label: "SQL Formatter", icon: "database", href: "/sql-formatter", desc: "Clean up queries", color: "text-primary", bg: "bg-primary/5" },
     ]
   },
   {
-    title: "Backend Utilities",
+    title: "Networking & Backend",
     tools: [
+      { id: "ip", label: "IP Calculator", icon: "lan", href: "/ip-calculator", desc: "CIDR & subnetting", color: "text-accent-blue", bg: "bg-accent-blue/5" },
+      { id: "curl", label: "cURL Converter", icon: "transform", href: "/curl-converter", desc: "Request to code", color: "text-accent-teal", bg: "bg-accent-teal/5" },
+      { id: "http", label: "HTTP Inspector", icon: "rebase_edit", href: "/http-inspector", desc: "Raw request parser", color: "text-primary", bg: "bg-primary/5" },
       { id: "epoch", label: "Epoch Converter", icon: "schedule", href: "/epoch-converter", desc: "Unix timestamp tool", color: "text-primary", bg: "bg-primary/5" },
       { id: "cron", label: "Cron Parser", icon: "event_repeat", href: "/cron-parser", desc: "Schedule humanizer", color: "text-accent-purple", bg: "bg-accent-purple/5" },
       { id: "regex", label: "Regex Tester", icon: "manage_search", href: "/regex-tester", desc: "Regular expressions", color: "text-accent-amber", bg: "bg-accent-amber/10" },
       { id: "base64", label: "Base64", icon: "code", href: "/base64-tool", desc: "Encode & decode", color: "text-accent-amber", bg: "bg-accent-amber/5" },
+    ]
+  },
+  {
+    title: "Architecture & Systems",
+    tools: [
+      { id: "kafka", label: "Kafka Visualizer", icon: "hub", href: "/kafka-visualizer", desc: "Animated data flow", color: "text-primary", bg: "bg-primary/5" },
+      { id: "redis", label: "Redis Cache Lab", icon: "memory", href: "/redis-lab", desc: "TTL & Eviction Lab", color: "text-accent-red", bg: "bg-accent-red/5" },
+      { id: "lb", label: "Load Balancer", icon: "architecture", href: "/load-balancer", desc: "Traffic distribution", color: "text-accent-blue", bg: "bg-accent-blue/5" },
     ]
   }
 ];
@@ -109,8 +121,8 @@ export default function DashboardPage() {
             <span className="text-[11px] font-bold uppercase tracking-widest">Built for performance</span>
          </div>
          <div className="flex gap-8 text-[11px] font-bold uppercase tracking-widest hover:text-text transition-smooth">
-           <Link href="https://github.com">Github</Link>
-           <Link href="/docs">Documentation</Link>
+           <Link href="https://github.com/brasmith9/dev-tool-kit">Github</Link>
+           <Link href="https://github.com/brasmith9/dev-tool-kit/blob/main/README.md">Documentation</Link>
            <Link href="/privacy">Privacy</Link>
          </div>
       </footer>
