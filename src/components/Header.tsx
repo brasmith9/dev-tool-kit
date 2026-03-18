@@ -13,7 +13,7 @@ const routeMeta: Record<string, { icon: string; label: string }> = {
   "/curl-converter": { icon: "transform", label: "cURL Converter" },
   "/http-inspector": { icon: "rebase_edit", label: "HTTP Inspector" },
   "/base64-tool": { icon: "code", label: "Base64 Tool" },
-  "/jwt-debugger": { icon: "vpn_key", label: "JWT Debugger" },
+  "/jwt-debugger": { icon: "vpn_key", label: "JWT Tool" },
   "/regex-tester": { icon: "manage_search", label: "Regex Tester" },
   "/hash-generator": { icon: "enhanced_encryption", label: "Hash Generator" },
   "/url-encoder": { icon: "link", label: "URL Encoder" },
@@ -28,13 +28,13 @@ const routeMeta: Record<string, { icon: string; label: string }> = {
   "/settings": { icon: "settings", label: "Settings" },
 };
 
-export default function Header() {
+export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [showResults, setShowResults] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
-  
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const meta = routeMeta[pathname] || { icon: "terminal", label: "Tool" };
 
   const filteredTools = search.length > 0 
@@ -50,32 +50,53 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+
+    globalThis.document?.addEventListener("keydown", handleKeyDown);
     globalThis.document?.addEventListener("mousedown", handleClickOutside);
-    return () => globalThis.document?.removeEventListener("mousedown", handleClickOutside);
+    return () => {
+      globalThis.document?.removeEventListener("keydown", handleKeyDown);
+      globalThis.document?.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [handleClickOutside]);
 
   return (
-    <header className="flex justify-between items-center pb-4 select-none relative z-50">
-      {/* Current Tool Indicator */}
-      <div className="flex items-center gap-2.5">
-        <div className="size-8 rounded-lg bg-surface-raised border border-border flex items-center justify-center text-primary/80 dark:bg-surface">
-          <span className="material-symbols-outlined text-[18px]">
-            {meta.icon}
-          </span>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-[10px] font-black uppercase tracking-[0.1em] text-text-dim leading-none mb-1">Current Tool</span>
-          <span className="font-bold text-text text-sm leading-none">{meta.label}</span>
+    <header className="flex justify-between items-center pb-4 select-none relative z-50 gap-4">
+      <div className="flex items-center gap-2.5 shrink-0">
+        <button 
+          onClick={onMenuClick}
+          className="lg:hidden size-8 rounded-lg bg-surface border border-border flex items-center justify-center text-text-dim hover:text-primary transition-smooth cursor-pointer"
+        >
+          <span className="material-symbols-outlined text-[20px]">menu</span>
+        </button>
+
+        {/* Current Tool Indicator */}
+        <div className="flex items-center gap-2.5">
+          <div className="size-8 rounded-lg bg-surface-raised border border-border flex items-center justify-center text-primary/80 hidden sm:flex">
+            <span className="material-symbols-outlined text-[18px]">
+              {meta.icon}
+            </span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] font-black uppercase tracking-[0.1em] text-text-dim leading-none mb-1 hidden sm:block">Current Tool</span>
+            <span className="font-bold text-text text-sm leading-none whitespace-nowrap">{meta.label}</span>
+          </div>
         </div>
       </div>
 
       <div className="flex items-center gap-3 relative" ref={searchRef}>
-        <div className="bg-surface border border-border px-3 py-1.5 rounded-xl flex items-center gap-2 shadow-sm focus-within:ring-2 focus-within:ring-primary/10 transition-smooth group">
+        <div className="bg-surface border border-border px-3 py-1.5 rounded-xl flex items-center gap-2 shadow-sm focus-within:ring-2 focus-within:ring-primary/10 transition-smooth group relative">
           <span className="material-symbols-outlined text-text-dim group-focus-within:text-primary text-[18px]">
             search
           </span>
           <input
-            className="bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] w-48 placeholder:text-text-dim/60 font-medium text-text"
+            ref={searchInputRef}
+            className="bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] w-32 sm:w-48 placeholder:text-text-dim/60 font-medium text-text"
             placeholder="Search tools..."
             type="text"
             value={search}
@@ -85,6 +106,10 @@ export default function Header() {
             }}
             onFocus={() => setShowResults(true)}
           />
+          <div className="hidden sm:flex items-center gap-1 opacity-40 group-focus-within:opacity-0 transition-opacity">
+            <div className="px-1.5 py-0.5 rounded border border-text-dim text-[9px] font-black font-mono">⌘</div>
+            <div className="px-1.5 py-0.5 rounded border border-text-dim text-[9px] font-black font-mono">K</div>
+          </div>
         </div>
 
         {showResults && filteredTools.length > 0 && (
@@ -115,3 +140,4 @@ export default function Header() {
     </header>
   );
 }
+

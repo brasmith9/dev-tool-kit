@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
-import Header from "@/components/Header";
 import JsonLd from "@/components/JsonLd";
+import ThemeWrapper from "@/components/ThemeWrapper";
+import NavigationWrapper from "@/components/NavigationWrapper";
 
 const softwareAppData = {
   "@context": "https://schema.org",
@@ -32,11 +32,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL("https://devtools.isaacanane.com"),
   title: {
-    default: "DevToolkit - Professional Backend & Architecture Utilities",
+    default: "DevToolkit - Professional Backend Developer Utilities",
     template: "%s | DevToolkit"
   },
-  description: "A high-performance toolkit for backend developers. Kafka visualizer, Load balancer simulation, Redis lab, JSON to Code, JWT debugger, and more. All data stays local for maximum security.",
-  keywords: ["developer tools", "kafka visualizer", "load balancer simulator", "redis lab", "json to code", "curl to code", "http inspector", "json formatter", "guid generator", "regex tester", "jwt debugger", "backend tools"],
+  description: "A high-performance, secure, and 100% local toolkit for backend developers. Features Kafka visualizer, Redis Lab, JWT Debugger, JSON to Code, and 20+ other essential utilities.",
+  keywords: ["developer tools", "backend tools", "kafka visualizer", "redis lab", "jwt debugger", "json to typescript", "curl to code", "json formatter", "uuid generator", "online developer tools"],
   authors: [{ name: "Isaac Amankwaah Anane" }],
   creator: "Isaac Amankwaah Anane",
   publisher: "DevToolkit",
@@ -44,47 +44,23 @@ export const metadata: Metadata = {
     icon: "/icon.png",
     apple: "/icon.png",
   },
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
   openGraph: {
-    title: "DevToolkit - Essential Backend Workspace",
+    title: "DevToolkit - Professional Developer Workspace",
     description: "Instant, local, and secure developer tools for the modern backend engineer.",
     url: "https://devtools.isaacanane.com",
     siteName: "DevToolkit",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1024,
-        height: 1024,
-        alt: "DevToolkit Branding",
-      },
-    ],
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "DevToolkit" }],
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "DevToolkit - Professional Developer Utilities",
-    description: "High-performance toolkit for backend developers. 100% local, no data leaves your browser.",
+    title: "DevToolkit - Essential Backend Tools",
+    description: "20+ high-performance developer utilities. 100% local, no data leaves your browser.",
     images: ["/og-image.png"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
   },
 };
 
-import ThemeWrapper from "@/components/ThemeWrapper";
 
 export default function RootLayout({
   children,
@@ -104,13 +80,9 @@ export default function RootLayout({
         className={`${inter.variable} font-display bg-background text-text min-h-screen antialiased`}
       >
         <ThemeWrapper>
-          <div className="flex h-screen overflow-hidden">
-            <Sidebar />
-            <main className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
-              <Header />
-              {children}
-            </main>
-          </div>
+          <NavigationWrapper>
+            {children}
+          </NavigationWrapper>
         </ThemeWrapper>
       </body>
     </html>

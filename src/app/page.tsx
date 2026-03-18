@@ -52,12 +52,19 @@ export default function DashboardPage() {
   return (
     <div className="animate-in space-y-10 pb-12">
       {/* Hero Welcome */}
-      <section className="relative overflow-hidden rounded-3xl bg-white border border-border shadow-float p-10 md:p-14">
+      <section className="relative overflow-hidden rounded-3xl bg-surface border border-border shadow-float p-10 md:p-14">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary-light/50 to-transparent pointer-events-none" />
         <div className="relative z-10 max-w-2xl">
-           <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-text leading-none mb-4">
-             Your Essential <br/> <span className="text-primary">Backend Workspace.</span>
-           </h1>
+           <div className="flex items-center gap-4 mb-8 group">
+              <div className="size-16 rounded-2xl bg-surface border border-primary/20 shadow-xl overflow-hidden flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-500">
+                 <img src="/logo.png" alt="DevToolkit" className="size-full object-contain" />
+              </div>
+              <div>
+                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-text leading-none">
+                   Your Essential <br/> <span className="text-primary">Backend Workspace.</span>
+                 </h1>
+              </div>
+           </div>
            <p className="text-lg text-text-sub font-medium leading-relaxed mb-8">
              A high-performance toolkit for developers. All data stays local, all tools are instant, and the design is built for focus.
            </p>
@@ -65,7 +72,7 @@ export default function DashboardPage() {
              <Link href="/guid-generator" className="px-6 py-3 bg-primary text-white font-bold rounded-xl shadow-card hover:bg-primary-hover transition-smooth flex items-center gap-2">
                 Quick Start <span className="material-symbols-outlined text-[18px]">bolt</span>
              </Link>
-             <Link href="/settings" className="px-6 py-3 bg-surface-raised text-text font-bold rounded-xl border border-border hover:bg-white hover:shadow-card transition-smooth">
+             <Link href="/settings" className="px-6 py-3 bg-surface-raised text-text font-bold rounded-xl border border-border hover:bg-surface hover:shadow-card transition-smooth">
                 Configure Prefs
              </Link>
            </div>
@@ -77,10 +84,10 @@ export default function DashboardPage() {
              const icons = ['terminal', 'database', 'settings_ethernet'] as const;
              return (
                <div key={icons[i]} className="flex gap-4" style={{ opacity: op }}>
-                  <div className="size-14 rounded-2xl bg-white border border-border shadow-card flex items-center justify-center text-primary">
+                  <div className="size-14 rounded-2xl bg-surface border border-border shadow-card flex items-center justify-center text-primary">
                     <span className="material-symbols-outlined text-[28px]">{icons[i]}</span>
                   </div>
-                  <div className="w-32 h-14 rounded-2xl bg-white border border-border shadow-card" />
+                  <div className="w-32 h-14 rounded-2xl bg-surface border border-border shadow-card" />
                </div>
              );
            })}
@@ -97,7 +104,7 @@ export default function DashboardPage() {
                 <Link 
                   key={tool.id} 
                   href={tool.href}
-                  className="group flex items-center gap-4 p-4 bg-white rounded-2xl border border-border shadow-card hover:shadow-card-hover hover:border-primary/20 transition-smooth"
+                  className="group flex items-center gap-4 p-4 bg-surface rounded-2xl border border-border shadow-card hover:shadow-card-hover hover:border-primary/20 transition-smooth"
                 >
                   <div className={`size-12 rounded-xl ${tool.bg} flex items-center justify-center ${tool.color} transition-smooth group-hover:scale-110`}>
                     <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: "'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24" }}>{tool.icon}</span>
@@ -116,9 +123,9 @@ export default function DashboardPage() {
 
       {/* Bottom Footer Info */}
       <footer className="pt-10 border-t border-border flex flex-col md:flex-row items-center justify-between gap-6 opacity-60">
-         <div className="flex items-center gap-2">
-            <div className="size-6 rounded bg-text-dim/20" />
-            <span className="text-[11px] font-bold uppercase tracking-widest">Built for performance</span>
+         <div className="flex items-center gap-3">
+            <img src="/icon.png" alt="Logo" className="size-6 object-contain" />
+            <span className="text-[11px] font-black uppercase tracking-widest">Built for high-performance</span>
          </div>
          <div className="flex gap-8 text-[11px] font-bold uppercase tracking-widest hover:text-text transition-smooth">
            <Link href="https://github.com/brasmith9/dev-tool-kit">Github</Link>
